@@ -13,15 +13,6 @@ st.markdown("""
 [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] {
     max-width: 80%;
 }
-.user-message {
-    display: flex;
-    justify-content: flex-end;
-}
-[data-testid="stChatMessage"].user [data-testid="stImage"] {
-    order: 2;
-    margin-left: 10px;
-    margin-right: 0;
-}
 .user-message [data-testid="stMarkdownContainer"] {
     margin-left: auto;
     background-color: #0084ff;
@@ -72,8 +63,7 @@ def main():
 
     # Display chat messages
     for message in st.session_state.messages:
-        avatar = "🧑" if message["role"] == "user" else "🤖"
-        with st.chat_message(message["role"], avatar=avatar):
+        with st.chat_message(message["role"], avatar=None):
             div_class = "user-message" if message["role"] == "user" else "assistant-message"
             st.markdown(f'<div class="{div_class}">{message["content"]}</div>', unsafe_allow_html=True)
 
@@ -83,7 +73,7 @@ def main():
     if user_input:
         # Add user message to chat history
         st.session_state.messages.append({"role": "user", "content": user_input})
-        with st.chat_message("user", avatar="🧑"):
+        with st.chat_message("user", avatar=None):
             st.markdown(f'<div class="user-message">{user_input}</div>', unsafe_allow_html=True)
 
         # Get LLM response
