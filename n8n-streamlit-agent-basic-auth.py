@@ -2,6 +2,33 @@ import streamlit as st
 import requests
 import uuid
 
+# Custom CSS for chat alignment
+st.markdown("""
+<style>
+[data-testid="stChatMessage"] {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+[data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] {
+    max-width: 80%;
+}
+.user-message [data-testid="stMarkdownContainer"] {
+    margin-left: auto;
+    background-color: #0084ff;
+    color: white;
+    border-radius: 15px;
+    padding: 10px;
+}
+.assistant-message [data-testid="stMarkdownContainer"] {
+    margin-right: auto;
+    background-color: #f0f0f0;
+    border-radius: 15px;
+    padding: 10px;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # Constants
 WEBHOOK_URL = "https://n8n.savaitgalioprojektai.lt/webhook/f9f3653a-633e-4949-91c7-70bad1425006"
 BEARER_TOKEN = "LABAS"
@@ -36,8 +63,9 @@ def main():
 
     # Display chat messages
     for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.write(message["content"])
+        with st.chat_message(message["role"], avatar=None):
+            div_class = "user-message" if message["role"] == "user" else "assistant-message"
+            st.markdown(f'<div class="{div_class}">{message["content"]}</div>', unsafe_allow_html=True)
 
     # User input
     user_input = st.chat_input("Type your message here...")
@@ -45,16 +73,16 @@ def main():
     if user_input:
         # Add user message to chat history
         st.session_state.messages.append({"role": "user", "content": user_input})
-        with st.chat_message("user"):
-            st.write(user_input)
+        with st.chat_message("user", avatar=None):
+            st.markdown(f'<div class="user-message">{user_input}</div>', unsafe_allow_html=True)
 
         # Get LLM response
         llm_response = send_message_to_llm(st.session_state.session_id, user_input)
 
         # Add LLM response to chat history
         st.session_state.messages.append({"role": "assistant", "content": llm_response})
-        with st.chat_message("assistant"):
-            st.write(llm_response)
+        with st.chat_message("assistant", avatar=None):
+            st.markdown(f'<div class="assistant-message">{llm_response}</div>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
