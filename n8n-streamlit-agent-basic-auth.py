@@ -26,8 +26,9 @@ def send_message_to_llm(session_id, message):
         return f"Error: {response.status_code} - {response.text}"
 
 def main():
-    st.title("Chat with LLM")
-
+    st.title("FinRAGas - Lietuvos Banko Sprendimų Asistentas")
+    st.markdown("*Išmanus draudimo sprendimų paieškos įrankis*")
+    
     # Initialize session state
     if "messages" not in st.session_state:
         st.session_state.messages = []
